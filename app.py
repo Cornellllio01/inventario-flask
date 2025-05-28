@@ -1,8 +1,16 @@
 from flask import Flask, render_template, request, redirect
+import psycopg2
 
 app = Flask(__name__)
 
-equipamentos = []
+# 🔧 Configure aqui sua conexão com o banco de dados
+conn = psycopg2.connect(
+    dbname="postgres",
+    user="postgres",
+    password="sua_senha",
+    host="localhost",  # ou o host do seu container/postgres
+    port="5432"
+)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -24,9 +32,41 @@ def index():
             'hd': to_int(request.form.get('hd')),
             'projetor': to_int(request.form.get('projetor'))
         }
+
         if novo['comodo']:
-            equipamentos.append(novo)
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO equipamentos 
+                (comodo, pc, notebook, monitor, mouse, teclado, webcam, hd, projetor)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                novo['comodo'], novo['pc'], novo['notebook'], novo['monitor'],
+                novo['mouse'], novo['teclado'], novo['webcam'],
+                novo['hd'], novo['projetor']
+            ))
+            conn.commit()
+            cur.close()
         return redirect('/')
+
+    # 🔄 Carrega todos os registros do banco
+    cur = conn.cursor()
+    cur.execute("SELECT comodo, pc, notebook, monitor, mouse, teclado, webcam, hd, projetor FROM equipamentos")
+    rows = cur.fetchall()
+    cur.close()
+
+    equipamentos = []
+    for row in rows:
+        equipamentos.append({
+            'comodo': row[0],
+            'pc': row[1],
+            'notebook': row[2],
+            'monitor': row[3],
+            'mouse': row[4],
+            'teclado': row[5],
+            'webcam': row[6],
+            'hd': row[7],
+            'projetor': row[8]
+        })
 
     totais = {
         'pc': sum(item['pc'] for item in equipamentos),
@@ -43,8 +83,10 @@ def index():
 
 @app.route('/delete/<int:index>', methods=['POST'])
 def delete_item(index):
-    if 0 <= index < len(equipamentos):
-        equipamentos.pop(index)
+    cur = conn.cursor()
+    cur.execute("DELETE FROM equipamentos WHERE ctid IN (SELECT ctid FROM equipamentos LIMIT 1 OFFSET %s)", (index,))
+    conn.commit()
+    cur.close()
     return redirect('/')
 
 if __name__ == '__main__':
