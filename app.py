@@ -13,14 +13,15 @@ supabase: Client = create_client(url, key)
 def index():
     if request.method == "POST":
         comodo = request.form.get("comodo")
-        pcs = int(request.form.get("pcs", 0))
-        notebooks = int(request.form.get("notebooks", 0))
-        monitores = int(request.form.get("monitores", 0))
-        mouses = int(request.form.get("mouses", 0))
-        teclados = int(request.form.get("teclados", 0))
-        webcams = int(request.form.get("webcams", 0))
-        hds = int(request.form.get("hds", 0))
-        projetores = int(request.form.get("projetores", 0))
+        pc = int(request.form.get("pc", 0))
+notebook = int(request.form.get("notebook", 0))
+monitor = int(request.form.get("monitor", 0))
+mouse = int(request.form.get("mouse", 0))
+teclado = int(request.form.get("teclado", 0))
+webcam = int(request.form.get("webcam", 0))
+hd = int(request.form.get("hd", 0))
+projetor = int(request.form.get("projetor", 0))
+
         created_at = datetime.utcnow().isoformat()
 
         dados = {
