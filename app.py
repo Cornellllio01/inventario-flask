@@ -31,8 +31,11 @@ except Exception as e:
     connection_error = f"Erro ao conectar com Supabase: {e}"
     print(f"❌ ERRO DE CONEXÃO: {connection_error}")
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+        return adicionar()
+    
     try:
         # Se não tem conexão com Supabase, mostra erro
         if not supabase or connection_error:
