@@ -15,13 +15,16 @@ def index():
     if request.method == "POST":
         comodo = request.form.get("comodo")
         pc = int(request.form.get("pc", 0))
-notebook = int(request.form.get("notebook", 0))
-monitor = int(request.form.get("monitor", 0))
-mouse = int(request.form.get("mouse", 0))
-teclado = int(request.form.get("teclado", 0))
-webcam = int(request.form.get("webcam", 0))
-hd = int(request.form.get("hd", 0))
-projetor = int(request.form.get("projetor", 0))
+        notebook = int(request.form.get("notebook", 0))
+        monitor = int(request.form.get("monitor", 0))
+        mouse = int(request.form.get("mouse", 0))
+        teclado = int(request.form.get("teclado", 0))
+        webcam = int(request.form.get("webcam", 0))
+        hd = int(request.form.get("hd", 0))
+        projetor = int(request.form.get("projetor", 0))
+        
+        # Aqui você pode salvar esses dados no banco, etc.
+
 
 
         created_at = datetime.utcnow().isoformat()
