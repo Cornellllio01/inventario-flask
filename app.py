@@ -9,6 +9,7 @@ url = "https://lxrzmysrrcqcabhxfeti.supabase.co"
 key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4cnpteXNycmNxY2FiaHhmZXRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzNDk3MzAsImV4cCI6MjA2MzkyNTczMH0.UE-nVgvSZjX4I4E5AB1sAAdCOaK46C4I2aYkDhn52dA"
 supabase: Client = create_client(url, key)
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -21,6 +22,7 @@ teclado = int(request.form.get("teclado", 0))
 webcam = int(request.form.get("webcam", 0))
 hd = int(request.form.get("hd", 0))
 projetor = int(request.form.get("projetor", 0))
+
 
         created_at = datetime.utcnow().isoformat()
 
