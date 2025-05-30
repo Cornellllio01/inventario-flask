@@ -4,69 +4,32 @@
   <meta charset="UTF-8" />
   <title>Inventário de Equipamentos</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #1b2b34;
-      color: white;
-      padding: 20px;
-    }
-    form {
-      background: #2c3e50;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-    }
-    input {
-      margin: 5px;
-      padding: 5px;
-      width: 120px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #34495e;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #2c3e50;
-      text-align: center;
-    }
-    th {
-      background: #16a085;
-    }
-    .btn-excluir {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .btn-excluir:hover {
-      background: #c0392b;
-    }
-    .totais {
-      font-weight: bold;
-      background: #1abc9c;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #1b2b34; color: white; padding: 20px; }
+    form  { background: #2c3e50; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+    input { margin: 5px; padding: 5px; width: 120px; }
+    table { width: 100%; border-collapse: collapse; background: #34495e; }
+    th, td { padding: 10px; border: 1px solid #2c3e50; text-align: center; }
+    th { background: #16a085; }
+    .btn-excluir { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    .btn-excluir:hover { background: #c0392b; }
+    .totais { font-weight: bold; background: #1abc9c; }
   </style>
 </head>
 <body>
   <h1>📋 Inventário de Equipamentos</h1>
 
-<form method="POST">
-  <input type="text" name="comodo" placeholder="Cômodo" required />
-  <input type="number" name="pc" placeholder="PCs" />
-  <input type="number" name="notebooks" placeholder="Notebooks" />
-  <input type="number" name="monitores" placeholder="Monitores" />
-  <input type="number" name="mouses" placeholder="Mouses" />
-  <input type="number" name="teclados" placeholder="Teclados" />
-  <input type="number" name="webcams" placeholder="Webcams" />
-  <input type="number" name="hd" placeholder="HDs" />
-  <input type="number" name="projetores" placeholder="Projetores" />
-  <button type="submit">Adicionar</button>
-</form>
-
+  <form method="POST" action="{{ url_for('adicionar') }}">
+    <input type="text"   name="comodo"     placeholder="Cômodo"   required />
+    <input type="number" name="pc"          placeholder="PCs"     value="0" min="0" />
+    <input type="number" name="notebooks"   placeholder="Notebooks" value="0" min="0" />
+    <input type="number" name="monitores"   placeholder="Monitores" value="0" min="0" />
+    <input type="number" name="mouses"      placeholder="Mouses"    value="0" min="0" />
+    <input type="number" name="teclados"    placeholder="Teclados"  value="0" min="0" />
+    <input type="number" name="webcams"     placeholder="Webcams"   value="0" min="0" />
+    <input type="number" name="hd"          placeholder="HDs"       value="0" min="0" />
+    <input type="number" name="projetores"  placeholder="Projetores"value="0" min="0" />
+    <button type="submit">Adicionar</button>
+  </form>
 
   <table>
     <thead>
@@ -78,7 +41,7 @@
         <th>Mouses</th>
         <th>Teclados</th>
         <th>Webcams</th>
-        <th>hd</th>
+        <th>HDs</th>
         <th>Projetores</th>
         <th>Excluir</th>
       </tr>
@@ -87,16 +50,16 @@
       {% for item in equipamentos %}
       <tr>
         <td>{{ item.comodo }}</td>
-        <td>{{ item.pc or '-' }}</td>
-        <td>{{ item.notebook or '-' }}</td>
-        <td>{{ item.monitor or '-' }}</td>
-        <td>{{ item.mouse or '-' }}</td>
-        <td>{{ item.teclado or '-' }}</td>
-        <td>{{ item.webcam or '-' }}</td>
-        <td>{{ item.hd or '-' }}</td>
-        <td>{{ item.projetor or '-' }}</td>
+        <td>{{ item.pc }}</td>
+        <td>{{ item.notebooks }}</td>
+        <td>{{ item.monitores }}</td>
+        <td>{{ item.mouses }}</td>
+        <td>{{ item.teclados }}</td>
+        <td>{{ item.webcams }}</td>
+        <td>{{ item.hd }}</td>
+        <td>{{ item.projetores }}</td>
         <td>
-          <form action="/delete/{{ loop.index0 }}" method="POST" style="margin:0;">
+          <form action="{{ url_for('delete', id=item.id) }}" method="POST" style="margin:0;">
             <button type="submit" class="btn-excluir">Excluir</button>
           </form>
         </td>
@@ -106,13 +69,13 @@
       <tr class="totais">
         <td>Total</td>
         <td>{{ totais.pc }}</td>
-        <td>{{ totais.notebook }}</td>
-        <td>{{ totais.monitor }}</td>
-        <td>{{ totais.mouse }}</td>
-        <td>{{ totais.teclado }}</td>
-        <td>{{ totais.webcam }}</td>
+        <td>{{ totais.notebooks }}</td>
+        <td>{{ totais.monitores }}</td>
+        <td>{{ totais.mouses }}</td>
+        <td>{{ totais.teclados }}</td>
+        <td>{{ totais.webcams }}</td>
         <td>{{ totais.hd }}</td>
-        <td>{{ totais.projetor }}</td>
+        <td>{{ totais.projetores }}</td>
         <td>-</td>
       </tr>
       {% endif %}
