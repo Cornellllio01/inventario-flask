@@ -61,16 +61,16 @@ def adicionar():
         return "Campo 'comodo' é obrigatório", 400
 
     dados = {
-        "comodo":    comodo,
-        "pc":        to_int(request.form.get("pc")),
-        "notebooks": to_int(request.form.get("notebooks")),
-        "monitores": to_int(request.form.get("monitores")),
-        "mouses":    to_int(request.form.get("mouses")),
-        "teclados":  to_int(request.form.get("teclados")),
-        "webcams":   to_int(request.form.get("webcams")),
-        "hd":        to_int(request.form.get("hd")),
-        "projetores":to_int(request.form.get("projetores")),
-    }
+    "comodo":    comodo,
+    "pc":        to_int(request.form.get("pc")),
+    "notebooks": to_int(request.form.get("notebooks")),
+    "monitores": to_int(request.form.get("monitores")),
+    "mouses":    to_int(request.form.get("mouses")),
+    "teclados":  to_int(request.form.get("teclados")),
+    "webcams":   to_int(request.form.get("webcams")),
+    "hd":        to_int(request.form.get("hd")),
+    "projetores":to_int(request.form.get("projetores")),
+}
     supabase.table("inventario_novo").insert(dados).execute()
     return redirect(url_for("index"))
 
