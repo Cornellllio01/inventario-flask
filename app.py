@@ -55,13 +55,13 @@ def index():
         # Calcula os totais
         totais = {
             "pc": sum(to_int(e.get("pc")) for e in equipamentos),
-            "notebooks": sum(to_int(e.get("notebooks")) for e in equipamentos),
-            "monitores": sum(to_int(e.get("monitores")) for e in equipamentos),
-            "mouses": sum(to_int(e.get("mouses")) for e in equipamentos),
-            "teclados": sum(to_int(e.get("teclados")) for e in equipamentos),
-            "webcams": sum(to_int(e.get("webcams")) for e in equipamentos),
+            "notebook": sum(to_int(e.get("notebook")) for e in equipamentos),
+            "monitore": sum(to_int(e.get("monitore")) for e in equipamentos),
+            "mouse": sum(to_int(e.get("mouse")) for e in equipamentos),
+            "teclado": sum(to_int(e.get("teclado")) for e in equipamentos),
+            "webcam": sum(to_int(e.get("webcam")) for e in equipamentos),
             "hd": sum(to_int(e.get("hd")) for e in equipamentos),
-            "projetores": sum(to_int(e.get("projetores")) for e in equipamentos),
+            "projetore": sum(to_int(e.get("projetore")) for e in equipamentos),
         }
 
         return render_template("index.html", equipamentos=equipamentos, totais=totais)
