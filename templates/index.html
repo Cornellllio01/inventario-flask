@@ -95,7 +95,8 @@
         <td>{{ item.hd or '-' }}</td>
         <td>{{ item.projetor or '-' }}</td>
         <td>
-          <form action="/delete/{{ loop.index0 }}" method="POST" style="margin:0;">
+          <form action="/delete/{{ item.id }}" method="POST" style="margin:0;">
+
             <button type="submit" class="btn-excluir">Excluir</button>
           </form>
         </td>
