@@ -80,13 +80,13 @@ def adicionar():
         dados = {
             "comodo": comodo,
             "pc": to_int(request.form.get("pc")),
-            "notebook": to_int(request.form.get("notebook")),
-            "monitor": to_int(request.form.get("monitor")),
-            "mouse": to_int(request.form.get("mouse")),
-            "teclado": to_int(request.form.get("teclado")),
-            "webcam": to_int(request.form.get("webcam")),
+            "notebooks": to_int(request.form.get("notebooks")),
+            "monitores": to_int(request.form.get("monitores")),
+            "mouses": to_int(request.form.get("mouses")),
+            "teclados": to_int(request.form.get("teclados")),
+            "webcams": to_int(request.form.get("webcams")),
             "hd": to_int(request.form.get("hd")),
-            "projetor": to_int(request.form.get("projetor"))
+            "projetores": to_int(request.form.get("projetores"))
         }
 
         print(f"🔄 Tentando inserir: {dados}")
