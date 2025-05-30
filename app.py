@@ -72,17 +72,18 @@ def adicionar():
         if not comodo:
             return jsonify({"erro": "Campo 'comodo' é obrigatório"}), 400
             
-        dados = {
-            "comodo": comodo,
-            "pc": int(request.form.get("pc") or 0),
-            "notebook": int(request.form.get("notebook", 0)),
-            "monitor": int(request.form.get("monitor", 0)),
-            "mouse": int(request.form.get("mouse", 0)),
-            "teclado": int(request.form.get("teclado", 0)),
-            "webcam": int(request.form.get("webcam", 0)),
-            "hd": int(request.form.get("hd", 0)),
-            "projetor": int(request.form.get("projetor", 0))
-        }
+      dados = {
+    "comodo": comodo,
+    "pc": int(request.form.get("pc") or 0),
+    "notebook": int(request.form.get("notebook") or 0),
+    "monitor": int(request.form.get("monitor") or 0),
+    "mouse": int(request.form.get("mouse") or 0),
+    "teclado": int(request.form.get("teclado") or 0),
+    "webcam": int(request.form.get("webcam") or 0),
+    "hd": int(request.form.get("hd") or 0),
+    "projetor": int(request.form.get("projetor") or 0)
+}
+
         
         print(f"🔄 Tentando inserir: {dados}")
         
