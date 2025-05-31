@@ -63,7 +63,7 @@ def adicionar():
     dados = {
     "comodo":    comodo,
     "pc":        to_int(request.form.get("pc")),
-    "notebooks": to_int(request.form.get("notebooks")),
+    "notebook": to_int(request.form.get("notebook")),
     "monitores": to_int(request.form.get("monitores")),
     "mouses":    to_int(request.form.get("mouses")),
     "teclados":  to_int(request.form.get("teclados")),
