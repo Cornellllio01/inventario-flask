@@ -77,13 +77,13 @@
       <tr>
         <th>Cômodo</th>
         <th>PCs</th>
-        <th>Notebook</th>
-        <th>Monitor</th>
-        <th>Mouse</th>
-        <th>Teclado</th>
-        <th>Webcam</th>
+        <th>Notebooks</th>
+        <th>Monitores</th>
+        <th>Mouses</th>
+        <th>Teclados</th>
+        <th>Webcams</th>
         <th>HD</th>
-        <th>Projetor</th>
+        <th>Projetores</th>
         <th>Excluir</th>
       </tr>
     </thead>
@@ -92,13 +92,13 @@
       <tr>
         <td>{{ item.comodo }}</td>
         <td>{{ item.pc or '-' }}</td>
-        <td>{{ item.notebook or '-' }}</td>
-        <td>{{ item.monitor or '-' }}</td>
-        <td>{{ item.mouse or '-' }}</td>
-        <td>{{ item.teclado or '-' }}</td>
-        <td>{{ item.webcam or '-' }}</td>
+        <td>{{ item.notebooks or '-' }}</td>
+        <td>{{ item.monitores or '-' }}</td>
+        <td>{{ item.mouses or '-' }}</td>
+        <td>{{ item.teclados or '-' }}</td>
+        <td>{{ item.webcams or '-' }}</td>
         <td>{{ item.hd or '-' }}</td>
-        <td>{{ item.projetor or '-' }}</td>
+        <td>{{ item.projetores or '-' }}</td>
         <td>
           <form action="/delete/{{ item.id }}" method="POST" style="margin:0;">
 
