@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
-import sys
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave_super_secreta_default")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "1379")  # senha padrão
 
 # Converte para int com fallback em 0
 def to_int(valor):
@@ -26,7 +26,35 @@ try:
 except Exception as e:
     connection_error = str(e)
 
+# Decorator para proteger rotas com login
+def login_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        senha = request.form.get("senha")
+        if senha == ADMIN_PASSWORD:
+            session["logged_in"] = True
+            return redirect(url_for("index"))
+        else:
+            error = "Senha incorreta, tente novamente."
+    return render_template("login.html", error=error)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
     if request.method == "POST":
         return adicionar()
@@ -55,26 +83,28 @@ def index():
                            totais=totais)
 
 @app.route("/adicionar", methods=["POST"])
+@login_required
 def adicionar():
     comodo = request.form.get("comodo")
     if not comodo:
         return "Campo 'comodo' é obrigatório", 400
 
     dados = {
-    "comodo":    comodo,
-    "pc":        to_int(request.form.get("pc")),
-    "notebooks": to_int(request.form.get("notebooks")),
-    "monitores": to_int(request.form.get("monitores")),
-    "mouses":    to_int(request.form.get("mouses")),
-    "teclados":  to_int(request.form.get("teclados")),
-    "webcams":   to_int(request.form.get("webcams")),
-    "hd":        to_int(request.form.get("hd")),
-    "projetores":to_int(request.form.get("projetores")),
-}
+        "comodo":    comodo,
+        "pc":        to_int(request.form.get("pc")),
+        "notebooks": to_int(request.form.get("notebooks")),
+        "monitores": to_int(request.form.get("monitores")),
+        "mouses":    to_int(request.form.get("mouses")),
+        "teclados":  to_int(request.form.get("teclados")),
+        "webcams":   to_int(request.form.get("webcams")),
+        "hd":        to_int(request.form.get("hd")),
+        "projetores":to_int(request.form.get("projetores")),
+    }
     supabase.table("inventario_novo").insert(dados).execute()
     return redirect(url_for("index"))
 
 @app.route("/delete/<int:id>", methods=["POST"])
+@login_required
 def delete(id):
     supabase.table("inventario_novo").delete().eq("id", id).execute()
     return redirect(url_for("index"))
