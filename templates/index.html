@@ -55,22 +55,19 @@
   <h1>📋 Inventário de Equipamentos</h1>
 
   <form method="POST" action="/adicionar">
-  <input type="text" name="comodo" placeholder="Cômodo" required />
+    <input type="text" name="comodo" placeholder="Cômodo" required />
 
- <input type="number" name="pc" placeholder="PC" />
-<input type="number" name="notebooks" placeholder="Notebooks" />
-<input type="number" name="monitores" placeholder="Monitores" />
-<input type="number" name="mouses" placeholder="Mouses" />
-<input type="number" name="teclados" placeholder="Teclados" />
-<input type="number" name="webcams" placeholder="Webcams" />
-<input type="number" name="hd" placeholder="HDs" />
-<input type="number" name="projetores" placeholder="Projetores" />
+    <input type="number" name="pc" placeholder="PC" />
+    <input type="number" name="notebooks" placeholder="Notebooks" />
+    <input type="number" name="monitores" placeholder="Monitores" />
+    <input type="number" name="mouses" placeholder="Mouses" />
+    <input type="number" name="teclados" placeholder="Teclados" />
+    <input type="number" name="webcams" placeholder="Webcams" />
+    <input type="number" name="hd" placeholder="HDs" />
+    <input type="number" name="projetores" placeholder="Projetores" />
 
-
-
-  <button type="submit">Adicionar</button>
-</form>
-
+    <button type="submit">Adicionar</button>
+  </form>
 
   <table>
     <thead>
@@ -101,7 +98,6 @@
         <td>{{ item.projetores or '-' }}</td>
         <td>
           <form action="/delete/{{ item.id }}" method="POST" style="margin:0;">
-
             <button type="submit" class="btn-excluir">Excluir</button>
           </form>
         </td>
@@ -111,14 +107,14 @@
       <tr class="totais">
         <td>Total</td>
         <td>{{ totais.pc }}</td>
-<td>{{ totais.notebooks }}</td>
-<td>{{ totais.monitores }}</td>
-<td>{{ totais.mouses }}</td>
-<td>{{ totais.teclados }}</td>
-<td>{{ totais.webcams }}</td>
-<td>{{ totais.hd }}</td>
-<td>{{ totais.projetores }}</td>
-
+        <td>{{ totais.notebooks }}</td>
+        <td>{{ totais.monitores }}</td>
+        <td>{{ totais.mouses }}</td>
+        <td>{{ totais.teclados }}</td>
+        <td>{{ totais.webcams }}</td>
+        <td>{{ totais.hd }}</td>
+        <td>{{ totais.projetores }}</td>
+        <td></td>
       </tr>
       {% endif %}
     </tbody>
