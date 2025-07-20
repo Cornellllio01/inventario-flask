@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import os
 
 app = Flask(__name__)
@@ -102,6 +102,50 @@ def adicionar():
     }
     supabase.table("inventario_novo").insert(dados).execute()
     return redirect(url_for("index"))
+
+# NOVA ROTA: Buscar dados para edição (AJAX)
+@app.route("/get_equipamento/<int:id>")
+@login_required
+def get_equipamento(id):
+    try:
+        res = supabase.table("inventario_novo").select("*").eq("id", id).execute()
+        if res.data:
+            return jsonify(res.data[0])
+        else:
+            return jsonify({"error": "Equipamento não encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# NOVA ROTA: Atualizar equipamento
+@app.route("/atualizar/<int:id>", methods=["POST"])
+@login_required
+def atualizar(id):
+    try:
+        comodo = request.form.get("comodo")
+        if not comodo:
+            return jsonify({"error": "Campo 'comodo' é obrigatório"}), 400
+
+        dados = {
+            "comodo":    comodo,
+            "pc":        to_int(request.form.get("pc")),
+            "notebooks": to_int(request.form.get("notebooks")),
+            "monitores": to_int(request.form.get("monitores")),
+            "mouses":    to_int(request.form.get("mouses")),
+            "teclados":  to_int(request.form.get("teclados")),
+            "webcams":   to_int(request.form.get("webcams")),
+            "hd":        to_int(request.form.get("hd")),
+            "projetores":to_int(request.form.get("projetores")),
+        }
+        
+        res = supabase.table("inventario_novo").update(dados).eq("id", id).execute()
+        
+        if res.data:
+            return jsonify({"success": True, "message": "Equipamento atualizado com sucesso"})
+        else:
+            return jsonify({"error": "Erro ao atualizar equipamento"}), 500
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/delete/<int:id>", methods=["POST"])
 @login_required

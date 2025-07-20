@@ -41,13 +41,115 @@
       padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
+      margin: 2px;
     }
     .btn-excluir:hover {
       background: #c0392b;
     }
+    .btn-editar {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 2px;
+    }
+    .btn-editar:hover {
+      background: #2980b9;
+    }
     .totais {
       font-weight: bold;
       background: #1abc9c;
+    }
+    .acoes {
+      white-space: nowrap;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #2c3e50;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      position: relative;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+    }
+    .close:hover {
+      color: white;
+    }
+    .modal h2 {
+      margin-top: 0;
+      color: #16a085;
+    }
+    .btn-salvar {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-salvar:hover {
+      background: #229954;
+    }
+    .btn-cancelar {
+      background: #95a5a6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-cancelar:hover {
+      background: #7f8c8d;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .form-row input {
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    /* Responsivo para mobile */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+      }
+      .form-row {
+        flex-direction: column;
+      }
+      .form-row input {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -81,7 +183,7 @@
         <th>Webcams</th>
         <th>HD</th>
         <th>Projetores</th>
-        <th>Excluir</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -96,9 +198,10 @@
         <td>{{ item.webcams or '-' }}</td>
         <td>{{ item.hd or '-' }}</td>
         <td>{{ item.projetores or '-' }}</td>
-        <td>
-          <form action="/delete/{{ item.id }}" method="POST" style="margin:0;">
-            <button type="submit" class="btn-excluir">Excluir</button>
+        <td class="acoes">
+          <button class="btn-editar" onclick="editarEquipamento({{ item.id }})">Editar</button>
+          <form action="/delete/{{ item.id }}" method="POST" style="display:inline;margin:0;">
+            <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este item?')">Excluir</button>
           </form>
         </td>
       </tr>
@@ -119,5 +222,127 @@
       {% endif %}
     </tbody>
   </table>
+
+  <!-- Modal de Edição -->
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <h2>✏️ Editar Equipamentos</h2>
+      
+      <form id="formEditar">
+        <div class="form-row">
+          <input type="text" id="edit-comodo" placeholder="Cômodo" required />
+        </div>
+        
+        <div class="form-row">
+          <input type="number" id="edit-pc" placeholder="PC" min="0" />
+          <input type="number" id="edit-notebooks" placeholder="Notebooks" min="0" />
+          <input type="number" id="edit-monitores" placeholder="Monitores" min="0" />
+          <input type="number" id="edit-mouses" placeholder="Mouses" min="0" />
+        </div>
+        
+        <div class="form-row">
+          <input type="number" id="edit-teclados" placeholder="Teclados" min="0" />
+          <input type="number" id="edit-webcams" placeholder="Webcams" min="0" />
+          <input type="number" id="edit-hd" placeholder="HDs" min="0" />
+          <input type="number" id="edit-projetores" placeholder="Projetores" min="0" />
+        </div>
+        
+        <div style="text-align: right; margin-top: 20px;">
+          <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn-salvar">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let equipamentoEditando = null;
+
+    function editarEquipamento(id) {
+      equipamentoEditando = id;
+      
+      // Buscar dados do equipamento
+      fetch(`/get_equipamento/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert('Erro ao carregar dados: ' + data.error);
+            return;
+          }
+          
+          // Preencher formulário
+          document.getElementById('edit-comodo').value = data.comodo || '';
+          document.getElementById('edit-pc').value = data.pc || '';
+          document.getElementById('edit-notebooks').value = data.notebooks || '';
+          document.getElementById('edit-monitores').value = data.monitores || '';
+          document.getElementById('edit-mouses').value = data.mouses || '';
+          document.getElementById('edit-teclados').value = data.teclados || '';
+          document.getElementById('edit-webcams').value = data.webcams || '';
+          document.getElementById('edit-hd').value = data.hd || '';
+          document.getElementById('edit-projetores').value = data.projetores || '';
+          
+          // Mostrar modal
+          document.getElementById('modalEditar').style.display = 'block';
+        })
+        .catch(error => {
+          alert('Erro ao carregar dados: ' + error);
+        });
+    }
+
+    function fecharModal() {
+      document.getElementById('modalEditar').style.display = 'none';
+      equipamentoEditando = null;
+    }
+
+    // Fechar modal clicando fora
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalEditar');
+      if (event.target === modal) {
+        fecharModal();
+      }
+    }
+
+    // Processar formulário de edição
+    document.getElementById('formEditar').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!equipamentoEditando) {
+        alert('Erro: Nenhum equipamento selecionado');
+        return;
+      }
+      
+      // Coletar dados do formulário
+      const formData = new FormData();
+      formData.append('comodo', document.getElementById('edit-comodo').value);
+      formData.append('pc', document.getElementById('edit-pc').value || '0');
+      formData.append('notebooks', document.getElementById('edit-notebooks').value || '0');
+      formData.append('monitores', document.getElementById('edit-monitores').value || '0');
+      formData.append('mouses', document.getElementById('edit-mouses').value || '0');
+      formData.append('teclados', document.getElementById('edit-teclados').value || '0');
+      formData.append('webcams', document.getElementById('edit-webcams').value || '0');
+      formData.append('hd', document.getElementById('edit-hd').value || '0');
+      formData.append('projetores', document.getElementById('edit-projetores').value || '0');
+      
+      // Enviar dados
+      fetch(`/atualizar/${equipamentoEditando}`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Equipamento atualizado com sucesso!');
+          fecharModal();
+          location.reload(); // Recarregar página para mostrar dados atualizados
+        } else {
+          alert('Erro ao atualizar: ' + (data.error || 'Erro desconhecido'));
+        }
+      })
+      .catch(error => {
+        alert('Erro ao salvar: ' + error);
+      });
+    });
+  </script>
 </body>
 </html>
