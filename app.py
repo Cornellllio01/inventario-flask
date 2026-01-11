@@ -18,18 +18,19 @@ connection_error = None
 try:
     from supabase import create_client, Client
     
-    # ✅ USANDO A CHAVE PUBLICÁVEL CORRETA
-    url = "https://pstnvkzvawqppkihsdtp.supabase.co"
-    key = "sb_publishable_6W4eyOt2-2_jSCP2HaiRWg_tATQJxBu"  # ← Chave publicável do frasco_de_inventário
+    # ✅ LÊ DAS VARIÁVEIS DE AMBIENTE (NÃO HARDCODED!)
+    url = os.environ.get("SUPABASE_URL")
+    key = os.environ.get("SUPABASE_KEY")
     
     if not url or not key:
-        connection_error = "Variáveis SUPABASE_URL e SUPABASE_KEY precisam estar configuradas"
+        connection_error = "Variáveis SUPABASE_URL e SUPABASE_KEY não configuradas"
+        print("❌ Variáveis de ambiente não encontradas!")
     else:
         supabase: Client = create_client(url, key)
-        print("✅ Cliente Supabase criado com sucesso!")
+        print(f"✅ Supabase conectado! URL: {url}")
 except Exception as e:
     connection_error = str(e)
-    print(f"❌ ERRO: {connection_error}")
+    print(f"❌ ERRO ao conectar: {connection_error}")
 
 # Decorator para proteger rotas com login
 def login_required(f):
