@@ -3,7 +3,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave_super_secreta_default")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "1379")  # senha padrão
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "1379")
 
 # Converte para int com fallback em 0
 def to_int(valor):
@@ -17,14 +17,19 @@ supabase = None
 connection_error = None
 try:
     from supabase import create_client, Client
+    
+    # ✅ USANDO A CHAVE PUBLICÁVEL CORRETA
     url = "https://pstnvkzvawqppkihsdtp.supabase.co"
-    key = "sb_secret_19H3uGUcox4gaVzJf644Hw__3Wgshdf"
+    key = "sb_publishable_6W4eyOt2-2_jSCP2HaiRWg_tATQJxBu"  # ← Chave publicável do frasco_de_inventário
+    
     if not url or not key:
         connection_error = "Variáveis SUPABASE_URL e SUPABASE_KEY precisam estar configuradas"
     else:
         supabase: Client = create_client(url, key)
+        print("✅ Cliente Supabase criado com sucesso!")
 except Exception as e:
     connection_error = str(e)
+    print(f"❌ ERRO: {connection_error}")
 
 # Decorator para proteger rotas com login
 def login_required(f):
@@ -62,25 +67,28 @@ def index():
     if connection_error or not supabase:
         return f"<h1>Erro de Configuração</h1><p>{connection_error}</p>", 500
 
-    # Busca registros
-    res = supabase.table("inventario_novo").select("*").execute()
-    equipamentos = res.data or []
+    try:
+        # Busca registros
+        res = supabase.table("inventario_novo").select("*").execute()
+        equipamentos = res.data or []
 
-    # Calcula totais com chaves plurais
-    totais = {
-        "pc":        sum(to_int(e.get("pc"))         for e in equipamentos),
-        "notebooks": sum(to_int(e.get("notebooks"))  for e in equipamentos),
-        "monitores": sum(to_int(e.get("monitores"))  for e in equipamentos),
-        "mouses":    sum(to_int(e.get("mouses"))     for e in equipamentos),
-        "teclados":  sum(to_int(e.get("teclados"))   for e in equipamentos),
-        "webcams":   sum(to_int(e.get("webcams"))    for e in equipamentos),
-        "hd":        sum(to_int(e.get("hd"))         for e in equipamentos),
-        "projetores":sum(to_int(e.get("projetores")) for e in equipamentos),
-    }
+        # Calcula totais
+        totais = {
+            "pc":        sum(to_int(e.get("pc"))         for e in equipamentos),
+            "notebooks": sum(to_int(e.get("notebooks"))  for e in equipamentos),
+            "monitores": sum(to_int(e.get("monitores"))  for e in equipamentos),
+            "mouses":    sum(to_int(e.get("mouses"))     for e in equipamentos),
+            "teclados":  sum(to_int(e.get("teclados"))   for e in equipamentos),
+            "webcams":   sum(to_int(e.get("webcams"))    for e in equipamentos),
+            "hd":        sum(to_int(e.get("hd"))         for e in equipamentos),
+            "projetores":sum(to_int(e.get("projetores")) for e in equipamentos),
+        }
 
-    return render_template("index.html",
-                           equipamentos=equipamentos,
-                           totais=totais)
+        return render_template("index.html",
+                               equipamentos=equipamentos,
+                               totais=totais)
+    except Exception as e:
+        return f"<h1>Erro ao carregar dados</h1><p>{str(e)}</p>", 500
 
 @app.route("/adicionar", methods=["POST"])
 @login_required
@@ -103,7 +111,6 @@ def adicionar():
     supabase.table("inventario_novo").insert(dados).execute()
     return redirect(url_for("index"))
 
-# NOVA ROTA: Buscar dados para edição (AJAX)
 @app.route("/get_equipamento/<int:id>")
 @login_required
 def get_equipamento(id):
@@ -116,7 +123,6 @@ def get_equipamento(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# NOVA ROTA: Atualizar equipamento
 @app.route("/atualizar/<int:id>", methods=["POST"])
 @login_required
 def atualizar(id):
