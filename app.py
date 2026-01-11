@@ -17,8 +17,8 @@ supabase = None
 connection_error = None
 try:
     from supabase import create_client, Client
-    url = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_KEY")
+    url = "https://pstnvkzvawqppkihsdtp.supabase.co"
+    key = "sb_secret_19H3uGUcox4gaVzJf644Hw__3Wgshdf"
     if not url or not key:
         connection_error = "Variáveis SUPABASE_URL e SUPABASE_KEY precisam estar configuradas"
     else:
